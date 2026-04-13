@@ -1,0 +1,33 @@
+ratelimiter/
+│
+├── cmd/
+│   └── server/
+│        └── main.go          ← starts HTTP API if you build it as a service
+│
+├── api/
+│   └── handler.go            ← defines HTTP handlers (if you choose Model B)
+│
+├── configs/
+│   └── config.yaml|.json     ← limit configs, environment vars, etc.
+│
+├── pkg/
+│   └── ratelimiter/
+│        ├── limiter.go       ← interface + factory
+│        ├── token_bucket.go  ← algorithm implementation
+│        ├── result.go        ← results & types
+│        ├── cleanup.go
+│        └── shard.go
+│
+├── middleware/
+│   └── http.go               ← wraps any limiter as net/http middleware
+│
+├── internal/
+│   ├── storage/
+│   │     └── memory.go       ← map/sharded-maps
+│   ├── userBucket.go
+│   └── util.go               ← hash/time helpers
+│
+├── test/
+│   └── limiter_test.go
+│
+└── go.mod
