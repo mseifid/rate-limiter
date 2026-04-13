@@ -6,13 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 )
-
-type limiterAPIResponse struct {
-	UserID  int    `json:"userID"`
-	Message string `json:"message"`
-}
 
 type RateLimiter interface {
 	Allow(ctx context.Context) (ratelimiter.LimitResult, error)
@@ -20,84 +14,34 @@ type RateLimiter interface {
 
 func RateLimiterAPIHandler(limiter *ratelimiter.Limiter) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		// queryParams := req.URL.Query()
-		// userIDArr, ok := queryParams["userID"]
+		queryParams := req.URL.Query()
+		userIDArr, ok := queryParams["userID"]
 
-		// if !ok {
-		// 	w.WriteHeader(http.StatusBadRequest)
-		// 	response := limiterAPIResponse{
-		// 		UserID:  0,
-		// 		Message: "user id is not sent!",
-		// 	}
+		if !ok {
+			// TODO: Good to have a more general response dto
+			// to include error detail
+			w.WriteHeader(http.StatusNotFound)
+			log.Println("not found userID")
+			return
+		}
 
-		// 	responseJson, err := json.Marshal(response)
-		// 	if err != nil {
-		// 		w.WriteHeader(http.StatusInternalServerError)
-		// 		log.Fatal()
-		// 		return
-		// 	}
+		ctx := context.WithValue(req.Context(), "userID", userIDArr[0])
+		req = req.WithContext(ctx)
 
-		// 	w.Write(responseJson)
-		// 	return
-		// }
-
-		//ctx := context.WithValue(context.Background(), "userID", userIDArr[0])
-		res, err := limiter.Allow(context.Background())
+		res, err := limiter.Allow(req.Context())
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal()
+			log.Println(err)
 			return
 		}
 
 		responseJson, err := json.Marshal(res)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal()
+			log.Println(err)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(responseJson)
 	}
-}
-
-func RateLimitAPIHandler(w http.ResponseWriter, req *http.Request) {
-	queryParams := req.URL.Query()
-	userIDArr, ok := queryParams["userID"]
-
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
-		response := limiterAPIResponse{
-			UserID:  0,
-			Message: "user id is not sent!",
-		}
-
-		responseJson, err := json.Marshal(response)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal()
-			return
-		}
-
-		w.Write(responseJson)
-		return
-	}
-
-	userID, err := strconv.Atoi(userIDArr[0])
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatal()
-		return
-	}
-	response := limiterAPIResponse{
-		UserID:  int(userID),
-		Message: "user retrieved Successfully!",
-	}
-	responseJson, err := json.Marshal(response)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatal()
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
 }

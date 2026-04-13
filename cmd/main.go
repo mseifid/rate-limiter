@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"app/pkg/ratelimiter"
-	//"github.com/redis/go-redis/v9"
 )
 
 func main() {

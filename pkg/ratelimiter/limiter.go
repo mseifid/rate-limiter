@@ -2,6 +2,7 @@ package ratelimiter
 
 import (
 	"context"
+	"fmt"
 )
 
 type Limiter struct {
@@ -23,8 +24,9 @@ func NewLimiter(store Store) *Limiter {
 }
 
 func (limiter *Limiter) Allow(ctx context.Context) (LimitResult, error) {
-	//userID := ctx.Value("userID")
-	tokenBucket := limiter.store.GetOrCreate("1")
+	userID := ctx.Value("userID").(string)
+	fmt.Println(userID)
+	tokenBucket := limiter.store.GetOrCreate(userID)
 	bRes := tokenBucket.Consume()
 
 	return LimitResult{
