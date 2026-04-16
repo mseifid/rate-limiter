@@ -6,7 +6,7 @@ import (
 )
 
 type shard struct {
-    mu      sync.Mutex
+    mu      sync.RWMutex
     buckets map[string]*Bucket
 }
 
@@ -14,11 +14,13 @@ const shardsCount = 32
 
 type InMemoryStore struct {
 	shards []shard
+	global *Bucket
 }
 
 func NewInMemoryStore() *InMemoryStore {
 	store := &InMemoryStore{
 		shards: make([]shard, shardsCount),
+		global: NewBucket(BucketTypeGlobal),
 	}
 	
 	for i := range shardsCount {
@@ -37,12 +39,16 @@ func (store *InMemoryStore) GetOrCreate(userID string) *Bucket {
 
 	bucket, ok := store.shards[shardKey].buckets[userID]
 	if !ok {
-		newBucket := NewBucket()
+		newBucket := NewBucket(BucketTypeUser)
 		store.shards[shardKey].buckets[userID] = newBucket
 		return newBucket
 	}
 
 	return bucket
+}
+
+func (store *InMemoryStore) GetGlobal() *Bucket {
+	return store.global
 }
 
 func getShardKey(userID string) uint8 {
