@@ -1,33 +1,27 @@
 ratelimiter/
 │
 ├── cmd/
-│   └── server/
-│        └── main.go          ← starts HTTP API if you build it as a service
+│   └── main.go ← starts HTTP API if you build it as a service   
 │
 ├── api/
-│   └── handler.go            ← defines HTTP handlers (if you choose Model B)
+│   └── handler.go            ← defines HTTP handlers ()
 │
 ├── configs/
-│   └── config.yaml|.json     ← limit configs, environment vars, etc.
+│   └── dev.json     ← environment vars
 │
 ├── pkg/
 │   └── ratelimiter/
 │        ├── limiter.go       ← interface + factory
-│        ├── token_bucket.go  ← algorithm implementation
+│        ├── bucket.go  ← algorithm implementation
 │        ├── result.go        ← results & types
-│        ├── cleanup.go
-│        └── shard.go
-│
-├── middleware/
-│   └── http.go               ← wraps any limiter as net/http middleware
+|        ├── storage.go    ← storage functionality
+|        ├── config.go    ← ratelimiter specific config
+|
+|   └── utility/  ← app utility functions
 │
 ├── internal/
-│   ├── storage/
-│   │     └── memory.go       ← map/sharded-maps
-│   ├── userBucket.go
-│   └── util.go               ← hash/time helpers
+│   ├── config/
+│        └── config.go       ← config exposer to app
 │
-├── test/
-│   └── limiter_test.go
 │
 └── go.mod
