@@ -22,7 +22,5 @@ func main() {
 	err = http.ListenAndServe("localhost:" + config.App.Port, nil);
 	if err != nil {
 		fmt.Println(err.Error())
-	} else {
-		fmt.Println("server started...")
 	}
 }

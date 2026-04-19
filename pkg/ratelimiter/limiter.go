@@ -2,7 +2,6 @@ package ratelimiter
 
 import (
 	"context"
-	//"fmt"
 )
 
 type Limiter struct {
