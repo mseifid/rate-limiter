@@ -30,6 +30,6 @@ func TestLimiterAllow(t *testing.T) {
 	wg.Wait()
 
 	if counter < UserBucketCapacity {
-		t.Errorf("oh no! expected: %v, actual: %v", UserBucketCapacity, counter)
+		t.Errorf("limiter allow test failed, expected: %v, actual: %v", UserBucketCapacity, counter)
 	}
 }

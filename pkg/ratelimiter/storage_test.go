@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// This test should be ran using -race flag to show possible race conditions
 func TestGetOrCreateBucketConcurrently(t *testing.T) {
 	store := NewInMemoryStore()
 	var wg sync.WaitGroup

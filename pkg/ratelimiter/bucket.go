@@ -10,7 +10,7 @@ type Bucket struct {
 	mu                    sync.Mutex
 	tokens                int64
 	lastRefill            time.Time
-	oneTokenRefillDuraion time.Duration
+	oneTokenRefillDuration time.Duration
 	capacity              int64
 }
 
@@ -18,11 +18,11 @@ func (bucket *Bucket) Consume() LimitResult {
 	bucket.mu.Lock()
 	defer bucket.mu.Unlock()
 
-	if bucket.tokens == 0 && time.Since(bucket.lastRefill) < bucket.oneTokenRefillDuraion {
+	if bucket.tokens == 0 && time.Since(bucket.lastRefill) < bucket.oneTokenRefillDuration {
 		return LimitResult{
 			Allowed:    false,
 			Remaining:  0,
-			RetryAfter: bucket.oneTokenRefillDuraion - time.Since(bucket.lastRefill),
+			RetryAfter: bucket.oneTokenRefillDuration - time.Since(bucket.lastRefill),
 		}
 	}
 
@@ -37,7 +37,7 @@ func (bucket *Bucket) Consume() LimitResult {
 	}
 
 	if res.Remaining == 0 {
-		res.RetryAfter = bucket.oneTokenRefillDuraion
+		res.RetryAfter = bucket.oneTokenRefillDuration
 	}
 
 	return res
@@ -48,7 +48,7 @@ func NewBucket(bucketType BucketType) *Bucket {
 		return &Bucket{
 			tokens:                UserBucketCapacity,
 			lastRefill:            time.Now(),
-			oneTokenRefillDuraion: UserRefillDuration,
+			oneTokenRefillDuration: UserRefillDuration,
 			capacity:              UserBucketCapacity,
 		}
 	}
@@ -56,7 +56,7 @@ func NewBucket(bucketType BucketType) *Bucket {
 	return &Bucket{
 		tokens:                GlobalBucketCapacity,
 		lastRefill:            time.Now(),
-		oneTokenRefillDuraion: GlobalRefillDuration,
+		oneTokenRefillDuration: GlobalRefillDuration,
 		capacity:              GlobalBucketCapacity,
 	}
 
@@ -64,9 +64,9 @@ func NewBucket(bucketType BucketType) *Bucket {
 
 func (bucket *Bucket) refill() {
 	elapsedFromRefill := time.Since(bucket.lastRefill)
-	tokensToAdd := int64(elapsedFromRefill / bucket.oneTokenRefillDuraion)
+	tokensToAdd := int64(elapsedFromRefill / bucket.oneTokenRefillDuration)
 
 	bucket.tokens = utility.MinInt(bucket.capacity, bucket.tokens+tokensToAdd)
 
-	bucket.lastRefill = bucket.lastRefill.Add(time.Duration(tokensToAdd) * bucket.oneTokenRefillDuraion)
+	bucket.lastRefill = bucket.lastRefill.Add(time.Duration(tokensToAdd) * bucket.oneTokenRefillDuration)
 }
