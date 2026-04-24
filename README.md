@@ -1,6 +1,6 @@
 # High-Performance Rate Limiter in Go
 
-An ultra fast, concurrent-safe rate limiting service written in Go, implementing the **Token Bucket** algorithm. Current implementation is in-memory and works for a single-node, however there is a roadmap to be extended for distributed scaling.
+An ultra fast, concurrent-safe rate limiting service written in Go, implementing the **Token Bucket** algorithm. Current implementation is in-memory and works correctly for a single-node, however there is a roadmap to be extended for distributed scaling.
 
 ## Features
 
