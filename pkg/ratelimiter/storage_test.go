@@ -12,9 +12,11 @@ func TestGetOrCreateBucketConcurrently(t *testing.T) {
 	const userID string = "5";
 
 	for range 1_000_000 {
-		wg.Go(func(){
+		wg.Add(1)
+		go func(){
+			defer wg.Done()
 			_ = store.GetOrCreate(userID)
-		})
+		}()
 	}
 
 	wg.Wait()

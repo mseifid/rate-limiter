@@ -16,7 +16,9 @@ func TestLimiterAllow(t *testing.T) {
 	counter := int64(0)
 
 	for range 1_000_000 {
-		wg.Go(func() {
+		wg.Add(1)
+		go func(){
+			defer wg.Done()
 			res, err := limiter.Allow(ctx)
 			if err != nil {
 				t.Errorf("Allow function returned error")
@@ -24,7 +26,7 @@ func TestLimiterAllow(t *testing.T) {
 			if res.Allowed {
 				atomic.AddInt64(&counter, 1)
 			}
-		})
+		}()
 	}
 
 	wg.Wait()

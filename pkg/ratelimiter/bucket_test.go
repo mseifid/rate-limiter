@@ -79,12 +79,14 @@ func TestConsumeBucketConcurrently(t *testing.T) {
 	var wg sync.WaitGroup
 	allowed := int64(0)
 	for range 1_000_000 {
-		wg.Go(func() {
+		wg.Add(1)
+		go func(){
+			defer wg.Done()
 			res := buck.Consume()
 			if res.Allowed {
 				atomic.AddInt64(&allowed, 1)
 			}
-		})
+		}()
 	}
 
 	wg.Wait()
