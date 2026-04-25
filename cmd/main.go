@@ -4,22 +4,20 @@ import (
 	"app/internal/config"
 	"app/api"
 	"fmt"
-	"log"
 	"net/http"
 	"app/pkg/ratelimiter"
 )
 
 func main() {
-	config, err := config.LoadConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
+	appConfig := config.GetConfig();
 
 	store := ratelimiter.NewInMemoryStore()
 	limiter := ratelimiter.NewLimiter(store)
 
+	fmt.Println("port is: " + appConfig.Port)
+
 	http.HandleFunc("/", api.RateLimiterAPIHandler(limiter));
-	err = http.ListenAndServe("localhost:" + config.App.Port, nil);
+	err := http.ListenAndServe("localhost:" + appConfig.Port, nil);
 	if err != nil {
 		fmt.Println(err.Error())
 	}
