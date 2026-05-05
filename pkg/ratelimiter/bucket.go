@@ -7,11 +7,11 @@ import (
 )
 
 type Bucket struct {
-	mu                    sync.Mutex
-	tokens                int64
-	lastRefill            time.Time
+	mu                     sync.Mutex
+	tokens                 int64
+	lastRefill             time.Time
 	oneTokenRefillDuration time.Duration
-	capacity              int64
+	capacity               int64
 }
 
 func (bucket *Bucket) Consume() LimitResult {
@@ -44,20 +44,20 @@ func (bucket *Bucket) Consume() LimitResult {
 }
 
 func NewBucket(bucketType BucketType) *Bucket {
-	if bucketType == BucketTypeUser {
+	if bucketType == bucketTypeUser {
 		return &Bucket{
-			tokens:                UserBucketCapacity,
-			lastRefill:            time.Now(),
-			oneTokenRefillDuration: UserRefillDuration,
-			capacity:              UserBucketCapacity,
+			tokens:                 userBucketCapacity,
+			lastRefill:             time.Now(),
+			oneTokenRefillDuration: userRefillDuration,
+			capacity:               userBucketCapacity,
 		}
 	}
 
 	return &Bucket{
-		tokens:                GlobalBucketCapacity,
-		lastRefill:            time.Now(),
-		oneTokenRefillDuration: GlobalRefillDuration,
-		capacity:              GlobalBucketCapacity,
+		tokens:                 globalBucketCapacity,
+		lastRefill:             time.Now(),
+		oneTokenRefillDuration: globalRefillDuration,
+		capacity:               globalBucketCapacity,
 	}
 
 }

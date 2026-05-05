@@ -13,8 +13,8 @@ func TestNewBucketCreation(t *testing.T) {
 		bucketType     BucketType
 		expectedTokens int64
 	}{
-		{"user bucket creation", BucketTypeUser, UserBucketCapacity},
-		{"global bucket creation", BucketTypeGlobal, GlobalBucketCapacity},
+		{"user bucket creation", bucketTypeUser, userBucketCapacity},
+		{"global bucket creation", bucketTypeGlobal, globalBucketCapacity},
 	}
 
 	for _, tt := range tests {
@@ -28,7 +28,7 @@ func TestNewBucketCreation(t *testing.T) {
 }
 
 func TestConsumeBucket(t *testing.T) {
-	buck := NewBucket(BucketTypeUser)
+	buck := NewBucket(bucketTypeUser)
 	actualRes := buck.Consume()
 
 	if actualRes.Remaining != buck.capacity-1 {
@@ -41,7 +41,7 @@ func TestConsumeBucket(t *testing.T) {
 }
 
 func TestRefillBucket(t *testing.T) {
-	buck := NewBucket(BucketTypeUser)
+	buck := NewBucket(bucketTypeUser)
 
 	tests := []struct {
 		name                string
@@ -57,7 +57,7 @@ func TestRefillBucket(t *testing.T) {
 		{"high usage, less than enough time to be full",
 			buck.oneTokenRefillDuration * 3,
 			buck.capacity - 10,
-			(buck.capacity - 10) + (int64(buck.oneTokenRefillDuration * 3) / int64(buck.oneTokenRefillDuration)),
+			(buck.capacity - 10) + (int64(buck.oneTokenRefillDuration*3) / int64(buck.oneTokenRefillDuration)),
 		},
 	}
 
@@ -74,13 +74,13 @@ func TestRefillBucket(t *testing.T) {
 }
 
 func TestConsumeBucketConcurrently(t *testing.T) {
-	buck := NewBucket(BucketTypeUser)
+	buck := NewBucket(bucketTypeUser)
 	buck.oneTokenRefillDuration = time.Minute * 1 // to deactivate refilling during test
 	var wg sync.WaitGroup
 	allowed := int64(0)
 	for range 1_000_000 {
 		wg.Add(1)
-		go func(){
+		go func() {
 			defer wg.Done()
 			res := buck.Consume()
 			if res.Allowed {

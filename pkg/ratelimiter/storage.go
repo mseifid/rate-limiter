@@ -1,13 +1,13 @@
 package ratelimiter
 
 import (
-	"sync"
 	"hash/fnv"
+	"sync"
 )
 
 type shard struct {
-    mu      sync.RWMutex
-    buckets map[string]*Bucket
+	mu      sync.RWMutex
+	buckets map[string]*Bucket
 }
 
 const shardsCount = 32
@@ -20,9 +20,9 @@ type InMemoryStore struct {
 func NewInMemoryStore() *InMemoryStore {
 	store := &InMemoryStore{
 		shards: make([]shard, shardsCount),
-		global: NewBucket(BucketTypeGlobal),
+		global: NewBucket(bucketTypeGlobal),
 	}
-	
+
 	for i := range shardsCount {
 		store.shards[i] = shard{
 			buckets: make(map[string]*Bucket),
@@ -39,7 +39,7 @@ func (store *InMemoryStore) GetOrCreate(userID string) *Bucket {
 
 	bucket, ok := store.shards[shardKey].buckets[userID]
 	if !ok {
-		newBucket := NewBucket(BucketTypeUser)
+		newBucket := NewBucket(bucketTypeUser)
 		store.shards[shardKey].buckets[userID] = newBucket
 		return newBucket
 	}

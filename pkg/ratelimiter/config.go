@@ -5,11 +5,10 @@ import "time"
 type BucketType string
 
 const (
-	BucketTypeGlobal BucketType = "global"
-	BucketTypeUser BucketType = "user"
+	bucketTypeGlobal BucketType = "global"
+	bucketTypeUser BucketType = "user"
+	userBucketCapacity = 200  // per minute
+	globalBucketCapacity = 1000 // per minute
+	userRefillDuration = time.Millisecond * 330
+	globalRefillDuration = time.Millisecond * 60
 )
-
-const UserBucketCapacity = 200 // per minute
-const GlobalBucketCapacity = 1000 // per minute
-const UserRefillDuration = time.Millisecond * 330
-const GlobalRefillDuration = time.Millisecond * 60
