@@ -43,7 +43,7 @@ func (bucket *Bucket) Consume() LimitResult {
 	return res
 }
 
-func NewBucket(bucketType BucketType) *Bucket {
+func NewBucket(bucketType bucketType) *Bucket {
 	if bucketType == bucketTypeUser {
 		return &Bucket{
 			tokens:                 userBucketCapacity,

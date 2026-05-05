@@ -10,7 +10,7 @@ import (
 func TestNewBucketCreation(t *testing.T) {
 	tests := []struct {
 		name           string
-		bucketType     BucketType
+		bucketType     bucketType
 		expectedTokens int64
 	}{
 		{"user bucket creation", bucketTypeUser, userBucketCapacity},

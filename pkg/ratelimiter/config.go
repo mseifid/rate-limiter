@@ -2,11 +2,11 @@ package ratelimiter
 
 import "time"
 
-type BucketType string
+type bucketType string
 
 const (
-	bucketTypeGlobal BucketType = "global"
-	bucketTypeUser BucketType = "user"
+	bucketTypeGlobal bucketType = "global"
+	bucketTypeUser bucketType = "user"
 	userBucketCapacity = 200  // per minute
 	globalBucketCapacity = 1000 // per minute
 	userRefillDuration = time.Millisecond * 330
